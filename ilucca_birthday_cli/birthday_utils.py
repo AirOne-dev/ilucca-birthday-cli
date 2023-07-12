@@ -23,14 +23,18 @@ def left_days(birthday):
 def get_birthdays(returnAll=False, returnNext=False, returnToday=False, prettyPrint=True):
     nbParams = returnAll + returnNext + returnToday
     if nbParams > 1:
-        raise Exception("get_birthdays: returnAll et returnNext et returnToday ne peuvent pas être True en même temps")
+        print("⚠️ Erreur: get_birthdays: returnAll et returnNext et returnToday ne peuvent pas être True en même temps")
+        exit(1)
     if nbParams == 0:
-        raise Exception("get_birthdays: returnAll ou returnNext ou returnToday doit être défini")
+        print("⚠️ Erreur: get_birthdays: returnAll ou returnNext ou returnToday doit être défini")
+        exit(1)
 
-    # Récupère les données JSON depuis l'API
-    # https://2l-multimedia.ilucca.net/api/v3/users/birthday?fields=id,name,firstname,lastname,manager.name,directLine,picture.href,mail,department.id,department.name,jobtitle,professionalmobile,birthDate,dtcontractstart&startsOn=2023-01-01&endsOn=2023-12-31
-    with open(os.path.join(os.path.dirname(__file__), 'ilucca_data.json')) as json_data_file:
-        data = json.load(json_data_file)
+    try:
+        with open(os.path.join(os.path.dirname(__file__), 'ilucca_data.json')) as json_data_file:
+            data = json.load(json_data_file)
+    except FileNotFoundError:
+        print("⚠️ Erreur: ilucca_data.json introuvable, veuillez exécuter la commande 'poetry run update_data'")
+        exit(1)
 
     # Converti les données JSON en une liste d'anniversaires
     birthdays = [{"name": item["name"], "birthday": item["birthDate"]} for item in data["data"]["items"]]
@@ -104,4 +108,4 @@ def update_data():
             json_data_file.write(response.content)
         print('ilucca_data.json updated successfully.')
     else:
-        print('Error updating ilucca_data.json. Status code:', response.status_code)
+        print('⚠️ Error updating ilucca_data.json. Status code:', response.status_code)

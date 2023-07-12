@@ -10,6 +10,7 @@
 ### Without docker
 
 Run `poetry install`
+
 Available commands :
 
 - `poetry run cli` => cli base version of this project with all options / arguments
