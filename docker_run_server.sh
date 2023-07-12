@@ -1,0 +1,1 @@
+docker run --rm ilucca_birthday_cli

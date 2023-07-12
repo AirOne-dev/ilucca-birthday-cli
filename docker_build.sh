@@ -1,0 +1,1 @@
+docker build -t ilucca_birthday_cli .

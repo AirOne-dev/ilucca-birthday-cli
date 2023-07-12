@@ -1,0 +1,37 @@
+[tool.poetry]
+name = "ilucca-birthday-cli"
+version = "0.1.0"
+description = ""
+authors = ["Erwan Martin <contact@erwan-martin.fr>"]
+readme = "README.md"
+packages = [{include = "ilucca_birthday_cli"}]
+
+[tool.poetry.dependencies]
+python = "^3.8"
+argparse = "^1.4.0"
+datetime = "^5.1"
+python-dateutil = "^2.8.2"
+slack-sdk = "^3.21.3"
+schedule = "^1.2.0"
+configparser = "^6.0.0"
+requests = "^2.31.0"
+
+[tool.poetry.scripts]
+cli = "ilucca_birthday_cli:cli"
+
+all = "ilucca_birthday_cli:all"
+list = "ilucca_birthday_cli:all"
+
+next = "ilucca_birthday_cli:next"
+
+today = "ilucca_birthday_cli:today"
+current = "ilucca_birthday_cli:today"
+
+server = "ilucca_birthday_cli:server"
+slack = "ilucca_birthday_cli:server"
+
+update_data = "ilucca_birthday_cli:update_data"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
