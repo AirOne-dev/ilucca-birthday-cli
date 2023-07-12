@@ -10,6 +10,7 @@
 ### Without docker
 
 Run `poetry install`
+
 Then run `poetry run update_data`
 
 Available commands :
