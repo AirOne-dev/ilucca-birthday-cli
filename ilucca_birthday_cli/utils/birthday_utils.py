@@ -1,11 +1,10 @@
-import json
-import os
-from datetime import datetime
 from dateutil.relativedelta import relativedelta
-from slack_sdk import WebClient
-from slack_sdk.errors import SlackApiError
+from datetime import datetime
+from . import slack_utils
 import configparser
 import requests
+import json
+import os
 
 
 # Retourne le nombre de jours restants avant un anniversaire
@@ -54,6 +53,7 @@ def get_birthdays(
             "birthday": item["birthDate"],
             "firstName": item["firstName"],
             "lastName": item["lastName"],
+            "mail": item["mail"],
         }
         for item in data["data"]["items"]
     ]
@@ -137,67 +137,24 @@ def send_today_birthday_to_slack():
     current_birthdays = get_birthdays(returnToday=True, prettyPrint=False)
     if len(current_birthdays) > 0:
         for birthday in current_birthdays:
-            user_id = get_slack_id_from_name(
-                birthday["firstName"], birthday["lastName"]
+            user_id = slack_utils.get_slack_id_from_info(
+                birthday["firstName"],
+                birthday["lastName"],
+                birthday["name"],
+                birthday["mail"],
             )
-            if user_id:
-                res = send_slack_message(
-                    "🎂 Joyeux anniversaire à 🧍 <@{0}> Qui fête ses {1} ans ! 🎂".format(
-                        user_id, birthday["age"]
-                    )
+            res = slack_utils.send_slack_message(
+                "🎂 Joyeux anniversaire à 🧍 {0} Qui fête ses {1} ans ! 🎂".format(
+                    "<@{0}>".format(user_id) if user_id else birthday["name"],
+                    birthday["age"],
                 )
-                if res[0]:
-                    print("✅ Message envoyé sur Slack : " + res[1])
-                else:
-                    print("⚠️ Erreur lors de l'envoi sur Slack : ", res[1])
+            )
+            if res[0]:
+                print("✅ Message envoyé sur Slack : " + res[1])
             else:
-                print(
-                    f"⚠️ Aucun utilisateur trouvé pour {birthday['firstName']} {birthday['lastName']}"
-                )
+                print("⚠️ Erreur lors de l'envoi sur Slack : ", res[1])
     else:
         print("Aucun anniversaire aujourd'hui.")
-
-
-# Obtient la liste des utilisateurs du workspace Slack
-def get_slack_users():
-    config = configparser.ConfigParser()
-    config.read("config.ini")
-
-    client = WebClient(token=config.get("Slack", "slack_token"))
-
-    try:
-        response = client.users_list()
-        return [True, response["members"]]
-    except SlackApiError as e:
-        return [False, e.response["error"]]
-
-
-# Retourne l'id Slack de quelqu'un en fonction de son nom et prénom
-def get_slack_id_from_name(first_name, last_name):
-    res = get_slack_users()
-    if res[0]:
-        users = res[1]
-        for user in users:
-            if "real_name" in user and user["real_name"] == f"{first_name} {last_name}":
-                return user["id"]
-        return None
-    else:
-        print("⚠️ Erreur lors de l'obtention de la liste des utilisateurs : ", res[1])
-        return None
-
-
-# Envoi un message sur Slack
-def send_slack_message(message):
-    config = configparser.ConfigParser()
-    config.read("config.ini")
-
-    client = WebClient(token=config.get("Slack", "slack_token"))
-
-    try:
-        client.chat_postMessage(channel=config.get("Slack", "channel_id"), text=message)
-        return [True, message]
-    except SlackApiError as e:
-        return [False, e.response["error"]]
 
 
 def update_data():
@@ -206,7 +163,7 @@ def update_data():
 
     iluccaUrl = config.get(
         "ilucca", "ilucca_api_url"
-    ) + "/users/birthday?fields=name,firstname,lastname,picture.href,birthDate&startsOn={0}-01-01&endsOn={1}-01-01".format(
+    ) + "/users/birthday?fields=name,firstname,mail,lastname,picture.href,birthDate&startsOn={0}-01-01&endsOn={1}-01-01".format(
         datetime.today().year, datetime.today().year + 1
     )
     cookies = {"authToken": config.get("ilucca", "ilucca_auth_token")}

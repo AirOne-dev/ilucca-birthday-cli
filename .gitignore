@@ -2,6 +2,6 @@
 .idea/*
 .vscode/*
 
-ilucca_birthday_cli/ilucca_data.json
-ilucca_birthday_cli/__pycache__/*
+**/utils/ilucca_data.json
+**/__pycache__/*
 config.ini

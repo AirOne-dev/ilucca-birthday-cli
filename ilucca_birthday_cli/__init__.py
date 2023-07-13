@@ -1,8 +1,6 @@
+from .utils import birthday_utils
 import argparse
 import locale
-import schedule
-import time
-from . import birthday_utils
 
 locale.setlocale(locale.LC_TIME, "fr_FR.UTF-8")
 
