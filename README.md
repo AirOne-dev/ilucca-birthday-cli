@@ -25,7 +25,7 @@ Available commands :
 ### With docker
 
 Run `./docker_build.sh` to build the docker image
-Then `./docker_run_server` to run a server that send a message to a slack channel when it's the birthday of someone
+Then `./docker_run_slack` to check if there is a birthday today and send a message to a slack channel
 
 ## Crontab
 
