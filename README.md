@@ -19,7 +19,7 @@ Available commands :
 - `poetry run all | list` => list all birthdays of each people
 - `poetry run next` => show the next birthday
 - `poetry run today | current` => show the birthday of the day if there is one
-- `poetry run server | slack` => start a server that send a message to a slack channel when it's the birthday of someone
+- `poetry run slack` => check if there is a birthday today ans send a message to a slack channel
 - `poetry run update_data` => download the birtday data from the ilucca v3 api
 
 ### With docker

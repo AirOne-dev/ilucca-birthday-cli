@@ -38,20 +38,9 @@ def today():
     print(birthday_utils.get_birthdays(returnToday=True))
 
 
-# Serveur qui check tous les jours à 08:30 si c'est l'anniversaire de quelqu'un
-# Si c'est le cas, envoi un message sur Slack
-def server():
-    print("Serveur démarré")
-    schedule.every().day.at("08:30").do(birthday_utils.send_today_birthday_to_slack)
-    print("Tâche planifiée pour 08:30 tous les jours")
-
-    try:
-        while True:
-            schedule.run_pending()
-            time.sleep(30)
-            pass
-    except KeyboardInterrupt:
-        print("Serveur arrêté")
+# Si c'est l'anniversaire de quelqu'un, envoi un message sur Slack
+def slack():
+    birthday_utils.send_today_birthday_to_slack()
 
 
 def update_data():

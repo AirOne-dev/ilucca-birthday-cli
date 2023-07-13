@@ -27,8 +27,7 @@ next = "ilucca_birthday_cli:next"
 today = "ilucca_birthday_cli:today"
 current = "ilucca_birthday_cli:today"
 
-server = "ilucca_birthday_cli:server"
-slack = "ilucca_birthday_cli:server"
+slack = "ilucca_birthday_cli:slack"
 
 update_data = "ilucca_birthday_cli:update_data"
 

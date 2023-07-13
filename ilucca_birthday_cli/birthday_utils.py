@@ -60,16 +60,19 @@ def get_birthdays(returnAll=False, returnNext=False, returnToday=False, prettyPr
     for day in birthdays:
         birthday = datetime.strptime(day['birthday'], "%Y-%m-%dT%H:%M:%S")
         if returnAll:
-            if prettyPrint: returnedText += "🗓️  {0:<2} {1:<15} 🧍 {2:<25} 🎂 {3:<10} ⌛ {4:<3} jours\n".format(birthday.day, birthday.strftime('%B'), day['name'], day['age'], day['remaining_days'])
-            else: returnedBirthday.append(day)
+            returnedText += "🗓️  {0:<2} {1:<15} 🧍 {2:<25} 🎂 {3:<10} ⌛ {4:<3} jours\n".format(birthday.day, birthday.strftime('%B'), day['name'], day['age'], day['remaining_days'])
+            returnedBirthday.append(day)
         elif returnNext:
-            if prettyPrint: returnedText += "🗓️  {0:<2} {1:<15} 🧍 {2:<25} 🎂 {3:<10} ⌛ {4:<3} jours\n".format(birthday.day, birthday.strftime('%B'), day['name'], day['age'], day['remaining_days'])
-            else: returnedBirthday.append(day)
+            returnedText += "🗓️  {0:<2} {1:<15} 🧍 {2:<25} 🎂 {3:<10} ⌛ {4:<3} jours\n".format(birthday.day, birthday.strftime('%B'), day['name'], day['age'], day['remaining_days'])
+            returnedBirthday.append(day)
             break
         elif returnToday and birthday.day == today.day and birthday.month == today.month:
             day['age'] -= 1
-            if prettyPrint: returnedText += "🎂 {0:>3} ans {1:<2} 🧍 {2:<25}\n".format(day['age'], '', day['name'])
-            else: returnedBirthday.append(day)
+            returnedText += "🎂 {0:>3} ans {1:<2} 🧍 {2:<25}\n".format(day['age'], '', day['name'])
+            returnedBirthday.append(day)
+
+    if prettyPrint and len(returnedBirthday) == 0:
+        return "\nAucun anniversaire à afficher.\n\n"
 
     return returnedText if prettyPrint else returnedBirthday
 
@@ -79,7 +82,13 @@ def send_today_birthday_to_slack():
     current_birthdays = get_birthdays(returnToday=True, prettyPrint=False)
     if len(current_birthdays) > 0:
         for birthday in current_birthdays:
-            send_slack_message("🎂 Joyeux anniversaire à 🧍 <@{0}> Qui fête ses {1} ans ! 🎂".format(birthday['name'], birthday['age']))
+            res = send_slack_message("🎂 Joyeux anniversaire à 🧍 <@{0}> Qui fête ses {1} ans ! 🎂".format(birthday['name'], birthday['age']))
+            if res[0]:
+                print("✅ Message envoyé sur Slack : " + res[1])
+            else:
+                print("⚠️ Erreur lors de l'envoi sur Slack : ", res[1])
+    else:
+        print("Aucun anniversaire aujourd'hui.")
 
 
 # Envoi un message sur Slack
@@ -90,9 +99,10 @@ def send_slack_message(message):
     client = WebClient(token=config.get('Slack', 'slack_token'))
 
     try:
-        response = client.chat_postMessage(channel=config.get('Slack', 'channel_id'), text=message)
+        client.chat_postMessage(channel=config.get('Slack', 'channel_id'), text=message)
+        return [True, message]
     except SlackApiError as e:
-        assert e.response["error"]
+        return [False, e.response["error"]]
 
 
 def update_data():
