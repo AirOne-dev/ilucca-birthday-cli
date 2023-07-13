@@ -82,7 +82,7 @@ def send_today_birthday_to_slack():
     current_birthdays = get_birthdays(returnToday=True, prettyPrint=False)
     if len(current_birthdays) > 0:
         for birthday in current_birthdays:
-            user_id = get_slack_id_from_name(birthday['first_name'], birthday['last_name'])
+            user_id = get_slack_id_from_name(birthday['firstName'], birthday['lastName'])
             if user_id:
                 res = send_slack_message("🎂 Joyeux anniversaire à 🧍 <@{0}> Qui fête ses {1} ans ! 🎂".format(user_id, birthday['age']))
                 if res[0]:
@@ -90,7 +90,7 @@ def send_today_birthday_to_slack():
                 else:
                     print("⚠️ Erreur lors de l'envoi sur Slack : ", res[1])
             else:
-                print(f"⚠️ Aucun utilisateur trouvé pour {birthday['first_name']} {birthday['last_name']}")
+                print(f"⚠️ Aucun utilisateur trouvé pour {birthday['firstName']} {birthday['lastName']}")
     else:
         print("Aucun anniversaire aujourd'hui.")
 
