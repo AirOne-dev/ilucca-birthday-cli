@@ -37,7 +37,7 @@ def get_birthdays(returnAll=False, returnNext=False, returnToday=False, prettyPr
         exit(1)
 
     # Converti les données JSON en une liste d'anniversaires
-    birthdays = [{"name": item["name"], "birthday": item["birthDate"]} for item in data["data"]["items"]]
+    birthdays = [{"name": item["name"], "birthday": item["birthDate"], 'firstName': item['firstName'], 'lastName': item['lastName']} for item in data["data"]["items"]]
 
     today = datetime.today()
 
