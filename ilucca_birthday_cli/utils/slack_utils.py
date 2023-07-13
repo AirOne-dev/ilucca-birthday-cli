@@ -2,6 +2,7 @@ from slack_sdk.errors import SlackApiError
 from slack_sdk import WebClient
 import configparser
 
+
 # Obtient la liste des utilisateurs du workspace Slack
 def get_slack_users():
     config = configparser.ConfigParser()
@@ -28,7 +29,10 @@ def get_slack_id_from_info(firstName: str, lastName: str, name: str, email: str)
                 userId = user["id"]
                 break
             # Vérifie le nom d'utilisateur
-            elif "name" in user and f"{user['name']}".lower() == f"{firstName}.{lastName}".lower():
+            elif (
+                "name" in user
+                and f"{user['name']}".lower() == f"{firstName}.{lastName}".lower()
+            ):
                 userId = user["id"]
                 break
     else:
