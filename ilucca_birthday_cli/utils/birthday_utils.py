@@ -144,7 +144,7 @@ def send_today_birthday_to_slack():
                 birthday["mail"],
             )
             res = slack_utils.send_slack_message(
-                "🎂 Joyeux anniversaire à 🧍 {0} Qui fête ses {1} ans ! 🎂".format(
+                "🎂 Joyeux anniversaire à {0} qui fête ses {1} ans ! 🎂".format(
                     "<@{0}>".format(user_id) if user_id else birthday["name"],
                     birthday["age"],
                 )
