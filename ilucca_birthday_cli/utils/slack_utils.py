@@ -19,27 +19,29 @@ def get_slack_users():
 # Retourne l'id Slack de quelqu'un en fonction de son nom, prénom ou email
 def get_slack_id_from_info(firstName, lastName, name, email):
     res = get_slack_users()
+    userId = None
     if res[0]:
         users = res[1]
         for user in users:
-            print(user)
             # Vérifiez le nom réel
             if "real_name" in user and user["real_name"] == f"{firstName} {lastName}":
-                return user["id"]
+                userId = user["id"]
+                break
             # Vérifiez le nom d'utilisateur
             elif "name" in user and user["name"] == name:
-                return user["id"]
+                userId = user["id"]
+                break
             # Vérifiez l'email
             elif (
                 "profile" in user
                 and "email" in user["profile"]
                 and user["profile"]["email"] == email
             ):
-                return user["id"]
-        return None
+                userId = user["id"]
+                break
     else:
         print("⚠️ Erreur lors de l'obtention de la liste des utilisateurs : ", res[1])
-        return None
+    return userId
 
 
 # Envoi un message sur Slack
