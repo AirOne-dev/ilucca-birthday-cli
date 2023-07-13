@@ -25,10 +25,12 @@ def get_slack_id_from_info(firstName, lastName, name, email):
         for user in users:
             # Vérifiez le nom réel
             if "real_name" in user and user["real_name"] == f"{firstName} {lastName}":
+                print(user)
                 userId = user["id"]
                 break
             # Vérifiez le nom d'utilisateur
             elif "name" in user and user["name"] == name:
+                print(user)
                 userId = user["id"]
                 break
             # Vérifiez l'email
@@ -37,6 +39,7 @@ def get_slack_id_from_info(firstName, lastName, name, email):
                 and "email" in user["profile"]
                 and user["profile"]["email"] == email
             ):
+                print(user)
                 userId = user["id"]
                 break
     else:
