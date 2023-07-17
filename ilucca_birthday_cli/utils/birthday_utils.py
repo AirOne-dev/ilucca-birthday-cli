@@ -162,11 +162,11 @@ def update_data():
     config.read("config.ini")
 
     iluccaUrl = config.get(
-        "ilucca", "ilucca_api_url"
+        "Ilucca", "ilucca_api_url"
     ) + "/users/birthday?fields=name,firstname,mail,lastname,picture.href,birthDate&startsOn={0}-01-01&endsOn={1}-01-01".format(
         datetime.today().year, datetime.today().year + 1
     )
-    cookies = {"authToken": config.get("ilucca", "ilucca_auth_token")}
+    cookies = {"authToken": config.get("Ilucca", "ilucca_auth_token")}
 
     response = requests.get(iluccaUrl, cookies=cookies)
     if response.status_code == 200:
