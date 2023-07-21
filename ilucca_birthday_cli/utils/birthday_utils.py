@@ -1,7 +1,7 @@
 from dateutil.relativedelta import relativedelta
 from datetime import datetime
 from . import slack_utils
-import configparser
+from . import global_utils
 import requests
 import json
 import os
@@ -158,8 +158,7 @@ def send_today_birthday_to_slack():
 
 
 def update_data():
-    config = configparser.ConfigParser()
-    config.read("config.ini")
+    config = global_utils.get_config()
 
     iluccaUrl = config.get(
         "Ilucca", "ilucca_api_url"

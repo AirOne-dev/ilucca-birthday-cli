@@ -1,12 +1,10 @@
 from slack_sdk.errors import SlackApiError
 from slack_sdk import WebClient
-import configparser
-
+from . import global_utils
 
 # Obtient la liste des utilisateurs du workspace Slack
 def get_slack_users():
-    config = configparser.ConfigParser()
-    config.read("config.ini")
+    config = global_utils.get_config()
 
     client = WebClient(token=config.get("Slack", "slack_token"))
 
@@ -42,8 +40,7 @@ def get_slack_id_from_info(firstName: str, lastName: str, name: str, email: str)
 
 # Envoi un message sur Slack
 def send_slack_message(message):
-    config = configparser.ConfigParser()
-    config.read("config.ini")
+    config = global_utils.get_config()
 
     client = WebClient(token=config.get("Slack", "slack_token"))
 
@@ -52,3 +49,4 @@ def send_slack_message(message):
         return [True, message]
     except SlackApiError as e:
         return [False, e.response["error"]]
+
